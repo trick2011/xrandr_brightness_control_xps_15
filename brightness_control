@@ -1,0 +1,32 @@
+#!/bin/bash
+file_location="/tmp/brightness_screen"
+
+brightness=$(head -n 1 $file_location)
+
+if [ -z "$brightness" ]
+then
+    brightness=0.5
+    echo $brightness > /tmp/brightness_screen
+fi
+
+if [ "$1" == "up" ]
+then
+    if [ "$brightness" == "1.0" ];
+    then
+	brightness="1.0"
+    else
+        brightness=$(echo "$brightness + 0.1" | bc);
+    fi
+    
+else
+    if [ "$brightness" == "0" ];
+    then
+	brightness="0"
+    else
+        brightness=$(echo "$brightness - 0.1" | bc);
+    fi
+fi
+
+xrandr --output eDP-1 --brightness $brightness
+
+echo $brightness > $file_location
